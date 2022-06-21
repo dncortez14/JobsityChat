@@ -1,4 +1,5 @@
 using JobsityChat.Data;
+using JobsityChat.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -61,6 +62,7 @@ namespace JobsityChat
             });
 
             services.AddControllersWithViews();
+            services.AddSignalR();
             services.AddRazorPages();
         }
 
@@ -92,6 +94,7 @@ namespace JobsityChat
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<RoomChatHub>("/roomChat");
             });
         }
     }
