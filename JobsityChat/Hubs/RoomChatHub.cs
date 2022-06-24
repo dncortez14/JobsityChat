@@ -8,11 +8,11 @@ namespace JobsityChat.Hubs
 {
     public class RoomChatHub : Hub
     {
-        private ApplicationDbContext context;
+        private ApplicationDbContext _context;
 
         public RoomChatHub(ApplicationDbContext applicationDbContext)
         {
-            context = applicationDbContext;
+            _context = applicationDbContext;
         }
 
         public string GroupName { get { return Context.GetHttpContext().Request.Query["roomName"]; } }
@@ -24,8 +24,8 @@ namespace JobsityChat.Hubs
         public async Task<string> SendMessage(string message)
         {
             var msg = new Message(UserName, message, GroupId);
-            context.Add(msg);
-            await context.SaveChangesAsync();
+            _context.Add(msg);
+            await _context.SaveChangesAsync();
 
             var time = msg.datetime.ToShortTimeString();
             await Clients.OthersInGroup(GroupName).SendAsync("ReceiveMessage", message, UserName, time);

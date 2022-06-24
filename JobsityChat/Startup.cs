@@ -1,6 +1,8 @@
 using JobsityChat.Data;
 using JobsityChat.Filters;
 using JobsityChat.Hubs;
+using JobsityChat.Infrastructure;
+using JobsityChat.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -72,6 +74,10 @@ namespace JobsityChat
             });
 
             services.AddSingleton<BotFilter>();
+
+            var storageConnectionString = Configuration.GetConnectionString("StorageConnectionString");
+            services.AddSingleton<IQueueService>(x => new QueueService(storageConnectionString));
+
             services.AddRazorPages();
         }
 
