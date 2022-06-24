@@ -1,20 +1,49 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using System;
+using JobsityChat.Data;
+using JobsityChat.Models;
 
 namespace JobsityChat.Hubs
 {
     public class RoomChatHub : Hub
     {
-        public async Task AddToGroup(string groupName)
+        private ApplicationDbContext context;
+
+        public RoomChatHub(ApplicationDbContext applicationDbContext)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            await Clients.OthersInGroup(groupName).SendAsync("ReceiveMessage", "pedro has join to the room");
+            context = applicationDbContext;
         }
 
-        public async Task RemoveFromGroup(string groupName)
+        public string GroupName { get { return Context.GetHttpContext().Request.Query["roomName"]; } }
+
+        public int GroupId { get { return Int32.Parse(Context.GetHttpContext().Request.Query["roomId"]); } }
+
+        public string UserName { get { return Context.GetHttpContext().User.Identity.Name; } }
+
+        public async Task<string> SendMessage(string message)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-            await Clients.OthersInGroup(groupName).SendAsync("ReceiveMessage", "pedro has left the room");
+            var msg = new Message(UserName, message, GroupId);
+            context.Add(msg);
+            await context.SaveChangesAsync();
+
+            var time = msg.datetime.ToShortTimeString();
+            await Clients.OthersInGroup(GroupName).SendAsync("ReceiveMessage", message, UserName, time);
+            return time;
+        }
+
+        public override async Task OnConnectedAsync()
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, GroupName);
+            await Clients.OthersInGroup(GroupName).SendAsync("Notifications", $"{UserName} has join to the room");
+            await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, GroupName);
+            await Clients.OthersInGroup(GroupName).SendAsync("Notifications", $"{UserName} has left the room");
+            await base.OnDisconnectedAsync(exception);
         }
     }
 }

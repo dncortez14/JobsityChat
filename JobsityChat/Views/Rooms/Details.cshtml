@@ -1,33 +1,38 @@
-﻿@model JobsityChat.Models.Room
+﻿@model JobsityChat.ViewModels.ConversationVM
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<link rel="stylesheet" href="~/css/roomChat.css" />
+
+<h4>Room</h4>
+<h2>@Model.RoomName</h2>
+@Html.HiddenFor(model => model.RoomName)
+@Html.HiddenFor(model => model.RoomId)
+<hr />
+
+
+@foreach (var message in Model.Messages)
+{
+    bool me = User.Identity.Name == message.SenderUser;
+    var sender = me ? "Me" : @message.SenderUser;
+    var color = me ? "messageContainerDarker" : "messageContainer";
+
+    <div class=@color>
+        <strong>@sender</strong><br>
+        @message.Text
+        <span class="time-right">@message.datetime.ToShortTimeString()</span>
+    </div>
+}
+
+<input id="newMessage" class="col-10" type="text" placeholder="Type here!" />
+<button id="sendButton" type="button" class="col-1" disabled onclick="sendMessage()">Send</button>
+
 
 <div>
-    @Html.HiddenFor(model => model.Name)
-    <h4>Room</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Active)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Active)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.RoomId">Edit</a> |
+    <a asp-action="Index">Back to Rooms</a>
 </div>
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>

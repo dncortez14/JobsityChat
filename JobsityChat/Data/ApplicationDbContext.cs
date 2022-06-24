@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using JobsityChat.Models;
 
 namespace JobsityChat.Data
@@ -13,6 +10,8 @@ namespace JobsityChat.Data
             : base(options)
         {
         }
-        public DbSet<JobsityChat.Models.Room> Room { get; set; }
+        public DbSet<Room> Room { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
     }
 }

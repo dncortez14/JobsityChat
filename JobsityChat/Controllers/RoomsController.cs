@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using JobsityChat.Data;
 using JobsityChat.Models;
 using Microsoft.AspNetCore.Authorization;
+using JobsityChat.ViewModels;
 
 namespace JobsityChat.Controllers
 {
@@ -42,7 +43,15 @@ namespace JobsityChat.Controllers
                 return NotFound();
             }
 
-            return View(room);
+            var messages = _context.Messages.Where(x => id.Equals(x.RoomId) && x.datetime.Date.Equals(DateTime.Now.Date));
+
+            var conversation = new ConversationVM() { 
+                RoomId = room.Id,
+                RoomName = room.Name,
+                Messages = messages
+            };
+
+            return View(conversation);
         }
 
         // GET: Rooms/Create

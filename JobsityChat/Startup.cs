@@ -1,20 +1,17 @@
 using JobsityChat.Data;
+using JobsityChat.Filters;
 using JobsityChat.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JobsityChat
 {
@@ -68,7 +65,13 @@ namespace JobsityChat
 
             services.AddControllersWithViews(options =>
                 options.ModelBinderProviders.RemoveType<DateTimeModelBinderProvider>());
-            services.AddSignalR();
+
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.AddFilter<BotFilter>();
+            });
+
+            services.AddSingleton<BotFilter>();
             services.AddRazorPages();
         }
 
