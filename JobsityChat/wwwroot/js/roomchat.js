@@ -26,8 +26,8 @@ function sendMessage() {
         connection.invoke("SendMessage", element.value).then(function (time) {
             createMessage("Me", "messageContainerDarker", element.value, time);
             element.value = "";
-        }).catch(function (err) {
-            return console.error(err.toString());
+        }).catch(function () {
+            element.value = "";
         });
     }
 }

@@ -1,6 +1,5 @@
 ﻿using JobsityChat.Hubs;
 using JobsityChat.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
@@ -21,9 +20,12 @@ namespace JobsityChat.Controllers
         [HttpPost]
         public async Task<StatusCodeResult> Post(QueueMessage queueMessage)
         {
-            await _hubContext.Clients.Group(queueMessage.RoomName).SendAsync("Notifications", queueMessage.SenderUser, queueMessage.Text, queueMessage.datetime.ToShortTimeString());
+            if (string.IsNullOrEmpty(queueMessage.ConnectionId))
+                await _hubContext.Clients.Group(queueMessage.RoomName).SendAsync("Notifications", queueMessage.SenderUser, queueMessage.Text, queueMessage.datetime.ToShortTimeString());
+            else
+                await _hubContext.Clients.Client(queueMessage.ConnectionId).SendAsync("Notifications", queueMessage.SenderUser, queueMessage.Text, queueMessage.datetime.ToShortTimeString());
+            
             return Ok();
         }
-
     }
 }

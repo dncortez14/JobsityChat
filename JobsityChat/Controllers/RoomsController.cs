@@ -12,6 +12,7 @@ using JobsityChat.ViewModels;
 
 namespace JobsityChat.Controllers
 {
+    [Authorize]
     public class RoomsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,8 +22,7 @@ namespace JobsityChat.Controllers
             _context = context;
         }
 
-        // GET: Rooms
-        [Authorize]
+        // GET: Rooms    
         public async Task<IActionResult> Index()
         {
             return View(await _context.Room.ToListAsync());

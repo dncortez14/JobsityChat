@@ -1,6 +1,8 @@
 ﻿using Azure.Storage.Queues;
 using JobsityChat.Interfaces;
 using Newtonsoft.Json;
+using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace JobsityChat.Infrastructure
@@ -22,7 +24,9 @@ namespace JobsityChat.Infrastructure
 
             if (queueClient.Exists())
             {
-                await queueClient.SendMessageAsync(JsonConvert.SerializeObject(message));
+                var json = JsonConvert.SerializeObject(message);
+                var messageForQueue = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+                await queueClient.SendMessageAsync(messageForQueue);
             }
         }
     }

@@ -26,10 +26,11 @@ namespace JobsityChat.Filters
             {
                 var userName = invocationContext.Context.User.Identity.Name;
                 var roomName = invocationContext.Context.GetHttpContext().Request.Query["roomName"];
+                var connectionId = invocationContext.Context.ConnectionId;
 
-                var qmsg = new QueueMessage(userName, message, roomName);
+                var qmsg = new QueueMessage(userName, message.Replace(STOCK, string.Empty), roomName, connectionId);
                 await _queueService.SendMessageAsync("stock", qmsg);
-                throw new HubException("error");
+                throw new HubException();
             }
             else
                 return await next(invocationContext);
