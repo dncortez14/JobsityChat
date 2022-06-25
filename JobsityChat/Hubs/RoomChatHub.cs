@@ -35,14 +35,14 @@ namespace JobsityChat.Hubs
         public override async Task OnConnectedAsync()
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, GroupName);
-            await Clients.OthersInGroup(GroupName).SendAsync("Notifications", $"{UserName} has join to the room");
+            await Clients.OthersInGroup(GroupName).SendAsync("Notifications", UserName, "has join to the room", DateTime.Now.ToShortTimeString());
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, GroupName);
-            await Clients.OthersInGroup(GroupName).SendAsync("Notifications", $"{UserName} has left the room");
+            await Clients.OthersInGroup(GroupName).SendAsync("Notifications", UserName, "has left the room", DateTime.Now.ToShortTimeString());
             await base.OnDisconnectedAsync(exception);
         }
     }

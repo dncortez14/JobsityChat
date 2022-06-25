@@ -8,7 +8,8 @@ connection.on("ReceiveMessage", function (message, user, time) {
     createMessage(user, "messageContainer", message, time);
 });
 
-connection.on("Notifications", function (message) {
+connection.on("Notifications", function (user, message, time) {
+    createMessage(user, "notificationContainer", message, time);
 });
 
 connection.start().then(function () {
