@@ -1,11 +1,12 @@
 # JobsityChat
 
 1 - Clone JobsityChat project in your local
-2 - Perform a 'EntityFrameworkCore\Update-Database' in your Package Manager Console
-3 - Clone botFunction in your local
-4 - Replace local.settings.json with the values send by email
-5 - Make sure that NotificationEndpoint port is matching with the port you are using for JobsityChat (NotificationEndpoint is a key in local.settings.json)
-6 - Run both projects
+2 - Add StorageAccount to appsettings.json (The key was sent in the email)
+3 - Perform a 'EntityFrameworkCore\Update-Database' in your Package Manager Console
+4 - Clone botFunction in your local
+5 - Replace local.settings.json with the values send by email
+6 - Make sure that NotificationEndpoint port is matching with the port you are using for JobsityChat (NotificationEndpoint is a key in local.settings.json)
+7 - Run both projects
 
 
 # Clarifications
